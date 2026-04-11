@@ -1,0 +1,122 @@
+[
+  {
+    "id": "law_001",
+    "name": "Dra. Carmen Villareal Osorio",
+    "specialties": ["Responsabilidad Civil Médica", "Derecho Penal Médico"],
+    "medical_areas": ["Cardiología", "Cirugía Cardíaca"],
+    "years_experience": 14,
+    "resolved_cases": 87,
+    "rating": 4.8,
+    "description": "Especialista en casos de negligencia médica cardiológica y cirugía de corazón. Amplia experiencia en demandas por complicaciones postoperatorias cardiovasculares."
+  },
+  {
+    "id": "law_002",
+    "name": "Dr. Andrés Montoya Quispe",
+    "specialties": ["Consentimiento Informado", "Bioética y Derecho"],
+    "medical_areas": ["Oncología", "Medicina General", "Cirugía General"],
+    "years_experience": 9,
+    "resolved_cases": 54,
+    "rating": 4.5,
+    "description": "Experto en consentimiento informado para procedimientos oncológicos y cirugías de alto riesgo. Defensor de los derechos del paciente."
+  },
+  {
+    "id": "law_003",
+    "name": "Dra. Lucía Herrera Paredes",
+    "specialties": ["Negligencia Médica", "Responsabilidad Civil Médica"],
+    "medical_areas": ["Neurología", "Neurocirugía", "Psiquiatría"],
+    "years_experience": 17,
+    "resolved_cases": 142,
+    "rating": 4.9,
+    "description": "Reconocida en casos neurológicos complejos: errores diagnósticos, complicaciones de cirugía cerebral y tratamientos psiquiátricos. Mayor índice de resoluciones exitosas de la región."
+  },
+  {
+    "id": "law_004",
+    "name": "Dr. Roberto Castillo Fuentes",
+    "specialties": ["Seguros Médicos", "Derecho Sanitario"],
+    "medical_areas": ["Traumatología", "Ortopedia", "Medicina Deportiva"],
+    "years_experience": 11,
+    "resolved_cases": 76,
+    "rating": 4.3,
+    "description": "Especializado en reclamaciones de seguros médicos por accidentes deportivos y lesiones traumatológicas. Asesor de clínicas deportivas."
+  },
+  {
+    "id": "law_005",
+    "name": "Dra. Patricia Solano Ríos",
+    "specialties": ["Derecho Médico", "Consentimiento Informado"],
+    "medical_areas": ["Ginecología", "Obstetricia", "Reproducción Asistida"],
+    "years_experience": 13,
+    "resolved_cases": 98,
+    "rating": 4.7,
+    "description": "Experta en casos gineco-obstétricos: mortalidad materna, complicaciones del parto, técnicas de reproducción asistida y derechos reproductivos."
+  },
+  {
+    "id": "law_006",
+    "name": "Dr. Miguel Ángel Torres Vidal",
+    "specialties": ["Negligencia Médica", "Derecho Penal Médico"],
+    "medical_areas": ["Pediatría", "Neonatología"],
+    "years_experience": 15,
+    "resolved_cases": 113,
+    "rating": 4.6,
+    "description": "Defensor especializado en casos de negligencia pediátrica y neonatal. Experiencia en daños cerebrales por asfixia neonatal y errores diagnósticos en menores."
+  },
+  {
+    "id": "law_007",
+    "name": "Dra. Isabel Aguirre Mendoza",
+    "specialties": ["Responsabilidad Civil Médica", "Derecho Sanitario"],
+    "medical_areas": ["Oftalmología", "Cirugía Ocular"],
+    "years_experience": 8,
+    "resolved_cases": 41,
+    "rating": 4.2,
+    "description": "Casos de mala práctica en cirugías oculares: LASIK, cataratas, trasplantes de córnea. Representación tanto de pacientes como de profesionales médicos."
+  },
+  {
+    "id": "law_008",
+    "name": "Dr. Fernando Zárate Huamán",
+    "specialties": ["Derecho Médico", "Bioética y Derecho", "Seguros Médicos"],
+    "medical_areas": ["Dermatología", "Cirugía Plástica", "Estética Médica"],
+    "years_experience": 10,
+    "resolved_cases": 67,
+    "rating": 4.4,
+    "description": "Especialista en litigios por procedimientos estéticos y dermatológicos. Alta demanda en casos de resultados insatisfactorios en cirugía plástica."
+  },
+  {
+    "id": "law_009",
+    "name": "Dra. Rosa Elena Vargas Chávez",
+    "specialties": ["Negligencia Médica", "Responsabilidad Civil Médica"],
+    "medical_areas": ["Gastroenterología", "Endoscopía", "Cirugía Digestiva"],
+    "years_experience": 12,
+    "resolved_cases": 88,
+    "rating": 4.5,
+    "description": "Especialidad en errores en procedimientos endoscópicos, perforaciones intestinales y complicaciones de cirugía bariátrica."
+  },
+  {
+    "id": "law_010",
+    "name": "Dr. Javier Enríquez Salas",
+    "specialties": ["Consentimiento Informado", "Derecho Sanitario", "Negligencia Médica"],
+    "medical_areas": ["Anestesiología", "Medicina Crítica", "UCI"],
+    "years_experience": 19,
+    "resolved_cases": 167,
+    "rating": 4.9,
+    "description": "Máxima autoridad en litigios por errores anestésicos y muertes en UCI. Perito en más de 200 procesos judiciales por negligencia en manejo de pacientes críticos."
+  },
+  {
+    "id": "law_011",
+    "name": "Dra. Natalia Quispe Bernales",
+    "specialties": ["Derecho Médico", "Responsabilidad Civil Médica"],
+    "medical_areas": ["Endocrinología", "Diabetes", "Metabolismo"],
+    "years_experience": 7,
+    "resolved_cases": 32,
+    "rating": 4.1,
+    "description": "Representación en casos de manejo inadecuado de diabetes y complicaciones endocrinológicas. Especialista en cronicidad y calidad de vida del paciente."
+  },
+  {
+    "id": "law_012",
+    "name": "Dr. César Palomino Gutiérrez",
+    "specialties": ["Negligencia Médica", "Derecho Penal Médico", "Seguros Médicos"],
+    "medical_areas": ["Neumología", "Neumología Intervencionista", "Medicina Interna"],
+    "years_experience": 16,
+    "resolved_cases": 124,
+    "rating": 4.7,
+    "description": "Experto en casos de COVID-19, EPOC mal tratado, broncoaspiraciones y cirugías torácicas con complicaciones. Referente nacional en derecho médico respiratorio."
+  }
+]
