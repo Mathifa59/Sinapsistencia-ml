@@ -1,6 +1,6 @@
 """
 Entidades del dominio — modelos Pydantic que representan los objetos
-que el sistema de recomendación recibe y produce.
+que el sistema de recomendación y evaluación de riesgo reciben y producen.
 """
 
 from datetime import datetime
@@ -16,7 +16,7 @@ class DoctorProfile(BaseModel):
     """Perfil del médico usado como entrada para generar recomendaciones."""
 
     id: str
-    name: str
+    name: str = Field(default="")
     specialty: str = Field(
         description="Especialidad médica principal (ej: 'Cardiología', 'Neurología')"
     )
@@ -83,13 +83,26 @@ class Interaction(BaseModel):
         return 1.0 if self.accepted else 0.0
 
 
-# ─── Request / Response de la API ─────────────────────────────────────────────
+# ─── Request / Response de la API (Recomendaciones) ──────────────────────────
 
 
 class RecommendationRequest(BaseModel):
-    """Cuerpo del request POST /recommendations."""
+    """
+    Cuerpo del request POST /recommendations.
+    Acepta el formato completo (doctor: DoctorProfile) O el formato
+    simplificado que envía el frontend de Next.js (doctor_id + doctor_profile).
+    """
 
-    doctor: DoctorProfile
+    doctor: Optional[DoctorProfile] = Field(
+        default=None,
+        description="Perfil completo del doctor (formato nativo ML)",
+    )
+    # Formato alternativo enviado por el frontend Next.js
+    doctor_id: Optional[str] = Field(default=None, description="UUID del doctor (formato frontend)")
+    doctor_profile: Optional[dict] = Field(
+        default=None,
+        description="Perfil parcial del doctor (formato frontend: {specialty, sub_specialties, hospital, years_experience})",
+    )
     top_k: int = Field(default=10, ge=1, le=50, description="Número de recomendaciones")
     min_score: float = Field(
         default=0.0,
@@ -97,6 +110,38 @@ class RecommendationRequest(BaseModel):
         le=1.0,
         description="Score mínimo para incluir una recomendación",
     )
+
+    def resolve_doctor(self) -> DoctorProfile:
+        """
+        Resuelve el perfil del doctor sin importar el formato recibido.
+        Soporta tanto el formato nativo (doctor: DoctorProfile) como
+        el formato del frontend (doctor_id + doctor_profile).
+        """
+        if self.doctor is not None:
+            return self.doctor
+
+        if self.doctor_id and self.doctor_profile:
+            return DoctorProfile(
+                id=self.doctor_id,
+                name=self.doctor_profile.get("name", ""),
+                specialty=self.doctor_profile.get("specialty", ""),
+                sub_specialties=self.doctor_profile.get("sub_specialties", []),
+                hospital=self.doctor_profile.get("hospital", ""),
+                years_experience=self.doctor_profile.get("years_experience", 0),
+                description=self.doctor_profile.get("description", ""),
+            )
+
+        raise ValueError(
+            "Se requiere 'doctor' (formato nativo) o 'doctor_id' + 'doctor_profile' (formato frontend)."
+        )
+
+
+class FeatureImportance(BaseModel):
+    """Importancia de una feature en la recomendación (explicabilidad)."""
+
+    feature: str = Field(description="Nombre de la feature")
+    importance: float = Field(description="Importancia relativa (0-1)")
+    description: str = Field(default="", description="Descripción legible de la feature")
 
 
 class RecommendationScore(BaseModel):
@@ -114,6 +159,14 @@ class RecommendationScore(BaseModel):
     model_used: str = Field(
         description="Modelo que generó la recomendación: 'content', 'collaborative', 'hybrid'"
     )
+    feature_importance: list[FeatureImportance] = Field(
+        default_factory=list,
+        description="Top features que explican esta recomendación (explicabilidad)",
+    )
+    reasons: list[str] = Field(
+        default_factory=list,
+        description="Razones legibles de la recomendación",
+    )
 
 
 class RecommendationResponse(BaseModel):
@@ -125,6 +178,58 @@ class RecommendationResponse(BaseModel):
     model_info: dict = Field(description="Metadatos del modelo usado en esta predicción")
 
 
+# ─── Evaluación de Riesgo Médico-Legal (HU-044 a HU-047) ────────────────────
+
+
+class RiskFactor(BaseModel):
+    """Un factor individual que contribuye al riesgo del caso."""
+
+    name: str = Field(description="Nombre del factor de riesgo")
+    weight: float = Field(ge=0.0, le=1.0, description="Peso del factor en el riesgo total")
+    value: float = Field(description="Valor del factor para este caso (0-1)")
+    contribution: float = Field(description="Contribución al riesgo: weight × value")
+    description: str = Field(default="", description="Explicación del factor")
+
+
+class RiskAssessmentRequest(BaseModel):
+    """Request para evaluar el riesgo médico-legal de un caso."""
+
+    case_id: Optional[str] = Field(default=None, description="ID del caso (para tracking)")
+    specialty: str = Field(description="Especialidad médica del caso")
+    description: str = Field(default="", description="Descripción del caso")
+    priority: str = Field(default="media", description="Prioridad: baja, media, alta, critica")
+    patient_age: Optional[int] = Field(default=None, ge=0, le=120)
+    patient_gender: Optional[str] = Field(default=None)
+    has_prior_complaints: bool = Field(default=False, description="Historial de quejas previas")
+    procedure_complexity: str = Field(
+        default="media",
+        description="Complejidad del procedimiento: baja, media, alta",
+    )
+    documentation_complete: bool = Field(
+        default=True, description="Documentación clínica completa"
+    )
+    informed_consent: bool = Field(default=True, description="Consentimiento informado firmado")
+    time_since_incident_days: Optional[int] = Field(
+        default=None, ge=0, description="Días desde el incidente"
+    )
+
+
+class RiskAssessmentResponse(BaseModel):
+    """Resultado de la evaluación de riesgo médico-legal."""
+
+    case_id: Optional[str]
+    risk_score: float = Field(ge=0.0, le=1.0, description="Score de riesgo global (0-1)")
+    risk_level: str = Field(description="Nivel: bajo, moderado, alto, critico")
+    risk_factors: list[RiskFactor] = Field(description="Factores individuales del riesgo")
+    recommendations: list[str] = Field(
+        description="Acciones recomendadas para mitigar el riesgo"
+    )
+    specialty_risk_baseline: float = Field(
+        description="Riesgo base de la especialidad médica"
+    )
+    model_version: str = Field(description="Versión del modelo de riesgo")
+
+
 # ─── Entrenamiento ────────────────────────────────────────────────────────────
 
 
@@ -133,6 +238,14 @@ class TrainingData(BaseModel):
 
     lawyers: list[LawyerProfile]
     interactions: list[Interaction] = Field(default_factory=list)
+
+
+class TrainingFromSupabaseRequest(BaseModel):
+    """Request para entrenar desde datos de Supabase."""
+
+    supabase_url: str = Field(description="URL del proyecto Supabase")
+    supabase_key: str = Field(description="Service role key de Supabase")
+    retrain: bool = Field(default=True, description="Forzar re-entrenamiento")
 
 
 class ModelMetrics(BaseModel):

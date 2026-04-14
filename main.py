@@ -1,13 +1,22 @@
 """
-Sinapsistencia ML — Sistema de Recomendación Médico-Legal
-=========================================================
-Microservicio FastAPI que expone el motor de recomendación basado en ML
-para el matching entre médicos y abogados especializados.
+Sinapsistencia ML — Sistema de Recomendación y Evaluación de Riesgo Médico-Legal
+=================================================================================
+Microservicio FastAPI que expone:
 
-Arquitectura del sistema:
-    1. Content-Based Filtering  → similitud de perfiles (TF-IDF + coseno)
-    2. Collaborative Filtering  → patrones de matches históricos (SVD)
-    3. Hybrid Recommender       → combinación ponderada de ambos modelos
+1. Motor de Recomendación basado en ML:
+    - Content-Based Filtering  → similitud de perfiles (TF-IDF + coseno)
+    - Collaborative Filtering  → patrones de matches históricos (SVD)
+    - Hybrid Recommender       → combinación ponderada adaptativa
+    - Explicabilidad           → feature importance + razones textuales
+
+2. Evaluación de Riesgo Médico-Legal:
+    - Modelo basado en factores ponderados
+    - Desglose de factores de riesgo
+    - Recomendaciones de mitigación
+
+3. Pipeline de Entrenamiento:
+    - Desde datos de muestra (desarrollo)
+    - Desde Supabase (producción con UUIDs reales)
 """
 
 from contextlib import asynccontextmanager
@@ -25,29 +34,34 @@ async def lifespan(app: FastAPI):
     """Carga los modelos al iniciar el servidor."""
     await recommender_service.initialize()
     yield
-    # Cleanup al cerrar (si fuera necesario)
 
 
 app = FastAPI(
     title=settings.app_name,
     version=settings.app_version,
     description="""
-    ## Motor de Recomendación Médico-Legal
+    ## Motor de Recomendación y Evaluación de Riesgo Médico-Legal
 
+    ### Recomendaciones
     Utiliza Machine Learning para recomendar abogados a médicos basándose en:
-
     - **Similitud de especialidades** (Content-Based Filtering con TF-IDF)
     - **Patrones históricos de matches exitosos** (Collaborative Filtering con SVD)
     - **Modelo híbrido** que combina ambos enfoques ponderadamente
+    - **Explicabilidad** con feature importance y razones textuales
 
-    ### Algoritmos implementados
-    - TF-IDF Vectorizer para representación de especialidades médico-legales
-    - Similitud del coseno para medir afinidad entre perfiles
-    - Descomposición en Valores Singulares (SVD) para factores latentes
-    - Ponderación adaptativa según disponibilidad de datos históricos
+    ### Evaluación de Riesgo (Épica 13)
+    Analiza factores de riesgo médico-legal de un caso:
+    - Riesgo por especialidad médica
+    - Complejidad del procedimiento
+    - Estado de documentación y consentimiento informado
+    - Historial de quejas y factor temporal
+
+    ### Entrenamiento
+    - Datos de muestra para desarrollo
+    - Pipeline Supabase para producción (UUIDs reales)
 
     ### Métricas de evaluación
-    - Precision@K, Recall@K, NDCG@K
+    - Precision@K, Recall@K, NDCG@K, MAP
     """,
     lifespan=lifespan,
 )
@@ -60,4 +74,4 @@ app.add_middleware(
 )
 
 app.include_router(health.router, tags=["Health"])
-app.include_router(recommendations.router, prefix="/api/v1", tags=["Recomendaciones"])
+app.include_router(recommendations.router, prefix="/api/v1", tags=["Recomendaciones y Riesgo"])

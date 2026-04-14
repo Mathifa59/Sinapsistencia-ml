@@ -38,6 +38,7 @@ from app.domain.entities import (
 )
 from app.models.content_based import ContentBasedRecommender
 from app.models.collaborative import CollaborativeRecommender
+from app.models.explainability import explain_hybrid_recommendation
 from app.data.preprocessing import find_matching_specialties
 from app.config import settings
 
@@ -197,6 +198,19 @@ class HybridRecommender:
             if not lawyer:
                 continue
 
+            # Generar explicabilidad (feature importance + razones)
+            feature_importance, reasons = explain_hybrid_recommendation(
+                doctor=doctor,
+                lawyer=lawyer,
+                content_model=self.content_model,
+                collaborative_model=self.collaborative_model,
+                content_score=c_score,
+                collaborative_score=cf_score,
+                final_score=final_score,
+                alpha=alpha,
+                beta=beta,
+            )
+
             results.append(
                 RecommendationScore(
                     lawyer_id=lawyer_id,
@@ -206,6 +220,8 @@ class HybridRecommender:
                     collaborative_score=round(cf_score, 4),
                     matched_specialties=find_matching_specialties(doctor, lawyer),
                     model_used=model_label,
+                    feature_importance=feature_importance,
+                    reasons=reasons,
                 )
             )
 

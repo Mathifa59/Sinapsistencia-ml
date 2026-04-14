@@ -141,9 +141,13 @@ class CollaborativeRecommender:
             R[d_idx, l_idx] = interaction.implicit_score
 
         # ── Paso 3: Aplicar Truncated SVD ─────────────────────────────────────
-        # Ajusta n_components si hay menos abogados que el parámetro
-        actual_components = min(self._n_components, n_doctors - 1, n_lawyers - 1)
-        if actual_components < self._n_components:
+        # Ajusta n_components dinámicamente al tamaño real de la matriz.
+        # SVD requiere n_components < min(n_rows, n_cols).
+        # Para datasets pequeños (ej: 10 doctores × 12 abogados), usar
+        # n_components=50 es absurdo — se reduce a max(1, min(dims)-1).
+        max_possible = min(n_doctors, n_lawyers) - 1
+        actual_components = max(1, min(self._n_components, max_possible))
+        if actual_components != self._n_components:
             self._svd = TruncatedSVD(
                 n_components=actual_components,
                 random_state=settings.svd_random_state,
