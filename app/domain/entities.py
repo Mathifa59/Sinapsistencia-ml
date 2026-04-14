@@ -3,7 +3,7 @@ Entidades del dominio — modelos Pydantic que representan los objetos
 que el sistema de recomendación y evaluación de riesgo reciben y producen.
 """
 
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 
 from pydantic import BaseModel, Field
@@ -69,7 +69,7 @@ class Interaction(BaseModel):
         le=5.0,
         description="Valoración explícita (1-5). Si None, se infiere del campo accepted.",
     )
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
     @property
     def implicit_score(self) -> float:

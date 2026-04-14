@@ -156,11 +156,14 @@ class ContentBasedRecommender:
 
         # Features numéricas del médico (normalizadas con el mismo scaler)
         # El scaler fue entrenado con 3 features de abogados; para el doctor
-        # usamos solo años de experiencia → padding con ceros para compatibilidad
+        # usamos solo años de experiencia → padding con ceros para compatibilidad.
+        # Clip a [0,1] tras escalar: los campos que el doctor no tiene (cases, rating)
+        # se padean con 0, que el scaler transforma a valores negativos — el clip
+        # evita que esos campos negativos distorsionen la similitud del coseno.
         doc_numerical_raw = extract_doctor_numerical_features(doctor)
         doc_numerical_padded = np.zeros((1, 3))
         doc_numerical_padded[0, 0] = doc_numerical_raw[0]  # años experiencia
-        doc_numerical_norm = self._scaler.transform(doc_numerical_padded)
+        doc_numerical_norm = np.clip(self._scaler.transform(doc_numerical_padded), 0.0, 1.0)
         doc_numerical_sparse = csr_matrix(doc_numerical_norm)
 
         doctor_vector = hstack([doctor_tfidf, doc_numerical_sparse])
@@ -208,7 +211,7 @@ class ContentBasedRecommender:
         doctor_tfidf = self._tfidf.transform([doctor_text])
         doc_numerical_padded = np.zeros((1, 3))
         doc_numerical_padded[0, 0] = float(doctor.years_experience)
-        doc_numerical_norm = self._scaler.transform(doc_numerical_padded)
+        doc_numerical_norm = np.clip(self._scaler.transform(doc_numerical_padded), 0.0, 1.0)
         doctor_vector = hstack([doctor_tfidf, csr_matrix(doc_numerical_norm)])
 
         lawyer_vector = self._lawyer_matrix[lawyer_idx]

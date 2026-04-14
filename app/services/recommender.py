@@ -65,7 +65,7 @@ class RecommenderService:
                 # Cargar metadata de versión si existe
                 meta_path = os.path.join(self._artifacts_path, "model_meta.json")
                 if os.path.exists(meta_path):
-                    with open(meta_path) as f:
+                    with open(meta_path, encoding="utf-8") as f:
                         meta = json.load(f)
                     self._model_version = meta.get("version")
                     self._trained_at = meta.get("trained_at")
@@ -208,8 +208,8 @@ class RecommenderService:
             "app_version": settings.app_version,
         }
         meta_path = os.path.join(self._artifacts_path, "model_meta.json")
-        with open(meta_path, "w") as f:
-            json.dump(meta, f, indent=2)
+        with open(meta_path, "w", encoding="utf-8") as f:
+            json.dump(meta, f, indent=2, ensure_ascii=False)
 
     @property
     def is_ready(self) -> bool:
@@ -236,13 +236,13 @@ def _load_sample_data() -> dict | None:
         return None
 
     try:
-        with open(lawyers_path) as f:
+        with open(lawyers_path, encoding="utf-8") as f:
             lawyers_raw = json.load(f)
         lawyers = [LawyerProfile(**l) for l in lawyers_raw]
 
         interactions: list[Interaction] = []
         if interactions_path.exists():
-            with open(interactions_path) as f:
+            with open(interactions_path, encoding="utf-8") as f:
                 interactions_raw = json.load(f)
             interactions = [Interaction(**i) for i in interactions_raw]
 

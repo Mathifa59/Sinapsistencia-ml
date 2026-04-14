@@ -32,16 +32,16 @@ def load_data() -> tuple[list[LawyerProfile], list[DoctorProfile], list[Interact
     """Carga los datos desde los archivos JSON de muestra."""
     base = Path("data/sample")
 
-    with open(base / "lawyers.json") as f:
+    with open(base / "lawyers.json", encoding="utf-8") as f:
         lawyers = [LawyerProfile(**item) for item in json.load(f)]
 
-    with open(base / "doctors.json") as f:
+    with open(base / "doctors.json", encoding="utf-8") as f:
         doctors = [DoctorProfile(**item) for item in json.load(f)]
 
     interactions: list[Interaction] = []
     interactions_path = base / "interactions.json"
     if interactions_path.exists():
-        with open(interactions_path) as f:
+        with open(interactions_path, encoding="utf-8") as f:
             interactions = [Interaction(**item) for item in json.load(f)]
 
     return lawyers, doctors, interactions

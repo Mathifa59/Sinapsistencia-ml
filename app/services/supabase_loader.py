@@ -9,7 +9,7 @@ no coinciden con los UUIDs reales de Supabase.
 """
 
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 
 import httpx
 
@@ -109,7 +109,7 @@ async def load_interactions_from_supabase(
             rating = round(min(max(rating, 1.0), 5.0), 2)
 
         timestamp = datetime.fromisoformat(
-            row.get("created_at", datetime.utcnow().isoformat())
+            row.get("created_at", datetime.now(timezone.utc).isoformat())
         )
 
         interactions.append(Interaction(

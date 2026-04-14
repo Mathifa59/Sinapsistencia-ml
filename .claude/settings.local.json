@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -m py_compile app/**/*.py)",
+      "Bash(python -c \"from app.domain.entities import DoctorProfile, LawyerProfile, Interaction, RecommendationRequest, RiskAssessmentRequest; print\\('✓ Domain entities import OK'\\)\")",
+      "Bash(python -c \"from app.config import Settings; print\\('config OK'\\)\")",
+      "Bash(pip list:*)",
+      "Bash(pip install:*)",
+      "Bash(python -c ':*)",
+      "Bash(python -m pytest tests/ -v)",
+      "Bash(timeout 15 python -m uvicorn main:app --host 127.0.0.1 --port 8000)",
+      "Bash(rm -rf artifacts)",
+      "Bash(timeout 20 python -m uvicorn main:app --host 127.0.0.1 --port 8001)",
+      "Bash(python -m uvicorn main:app --host 127.0.0.1 --port 8002)",
+      "Bash(python -m json.tool)",
+      "Bash(curl -s http://127.0.0.1:8002/api/v1/model/info)",
+      "Bash(curl -s -X POST http://127.0.0.1:8002/api/v1/recommendations -H \"Content-Type: application/json\" -d '{\"doctor\":{\"id\":\"doc-test\",\"name\":\"Dr. Test\",\"specialty\":\"Cardiología\"},\"top_k\":3}')",
+      "Bash(curl -s -X POST http://127.0.0.1:8002/api/v1/risk-assessment -H \"Content-Type: application/json\" -d '{\"specialty\":\"Neurocirugía\",\"priority\":\"alta\",\"documentation_complete\":false,\"informed_consent\":false}')",
+      "Bash(PYTHONIOENCODING=utf-8 python -m training.train)"
+    ]
+  }
+}

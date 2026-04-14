@@ -1,9 +1,12 @@
 from datetime import datetime, timezone
 
+from pydantic import ConfigDict
 from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
+    model_config = ConfigDict(env_file=".env")
+
     app_name: str = "Sinapsistencia ML — Sistema de Recomendación y Evaluación de Riesgo"
     app_version: str = "2.0.0"
     debug: bool = False
@@ -36,9 +39,6 @@ class Settings(BaseSettings):
 
     # Modelo de riesgo
     risk_model_version: str = "1.0.0"
-
-    class Config:
-        env_file = ".env"
 
 
 settings = Settings()

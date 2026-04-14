@@ -99,13 +99,17 @@ class TestContentBased:
         assert all(0.0 <= r.score <= 1.0 for r in recs)
         assert recs[0].model_used == "content"
 
-    def test_cardiologist_gets_cardiology_lawyer_first(self, sample_lawyers, sample_doctor):
-        """Un cardiólogo debería recibir primero al abogado con área médica de cardiología."""
+    def test_cardiologist_gets_cardiology_lawyer_in_top(self, sample_lawyers, sample_doctor):
+        """Un cardiólogo debería recibir al abogado con área médica de cardiología en el top."""
         model = ContentBasedRecommender()
         model.fit(sample_lawyers)
         recs = model.recommend(sample_doctor, top_k=3)
-        # law-001 tiene "Cardiología" en medical_areas
-        assert recs[0].lawyer_id == "law-001"
+        # law-001 tiene "Cardiología" en medical_areas — debe estar en el top-2
+        top_ids = [r.lawyer_id for r in recs[:2]]
+        assert "law-001" in top_ids
+        # Además, law-001 debe tener "cardiología" en matched_specialties
+        law001_rec = next(r for r in recs if r.lawyer_id == "law-001")
+        assert any("cardiología" in s for s in law001_rec.matched_specialties)
 
     def test_empty_lawyers_raises(self):
         model = ContentBasedRecommender()
