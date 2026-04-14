@@ -180,6 +180,24 @@ class HybridRecommender:
         # Ordena por score final
         combined.sort(key=lambda x: x[1], reverse=True)
 
+        # ── Normalizar scores al rango visible [0.55, 0.95] ──────────────────
+        # Los scores de cosine similarity son bajos por naturaleza (0.05–0.25).
+        # Aplicamos min-max sobre el top-K para que la UI muestre valores
+        # intuitivos (55%–95%) sin alterar el ordenamiento relativo entre abogados.
+        top_slice = combined[:top_k]
+        if len(top_slice) > 1:
+            raw_scores = [s for _, s, _, _ in top_slice]
+            lo, hi = min(raw_scores), max(raw_scores)
+            if hi > lo:
+                top_slice = [
+                    (lid, round(0.55 + ((s - lo) / (hi - lo)) * 0.40, 4), c, cf)
+                    for lid, s, c, cf in top_slice
+                ]
+            else:
+                # Todos tienen el mismo score → asignar 0.70 como valor neutro
+                top_slice = [(lid, 0.70, c, cf) for lid, _, c, cf in top_slice]
+            combined = top_slice + combined[top_k:]
+
         # ── Construir respuesta ───────────────────────────────────────────────
         model_label = (
             "content" if beta == 0.0
