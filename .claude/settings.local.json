@@ -17,7 +17,8 @@
       "Bash(curl -s -X POST http://127.0.0.1:8002/api/v1/recommendations -H \"Content-Type: application/json\" -d '{\"doctor\":{\"id\":\"doc-test\",\"name\":\"Dr. Test\",\"specialty\":\"Cardiología\"},\"top_k\":3}')",
       "Bash(curl -s -X POST http://127.0.0.1:8002/api/v1/risk-assessment -H \"Content-Type: application/json\" -d '{\"specialty\":\"Neurocirugía\",\"priority\":\"alta\",\"documentation_complete\":false,\"informed_consent\":false}')",
       "Bash(PYTHONIOENCODING=utf-8 python -m training.train)",
-      "Bash(npm run:*)"
+      "Bash(npm run:*)",
+      "mcp__6b1b1df7-437f-484c-bdc6-43e67bb47d7a__execute_sql"
     ]
   }
 }
