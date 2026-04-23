@@ -141,9 +141,6 @@ class RecommenderService:
             "lawyers_indexed": len(training_data.lawyers),
             "interactions_used": len(training_data.interactions),
             "content_model": "trained",
-            "collaborative_model": (
-                "trained" if self._model.collaborative_model.is_fitted else "skipped (< 5 interacciones)"
-            ),
             "vocabulary_size": (
                 self._model.content_model.vocabulary_size
                 if self._model.content_model.is_fitted
@@ -187,10 +184,6 @@ class RecommenderService:
             "lawyers_indexed": len(lawyers),
             "interactions_used": len(interactions),
             "content_model": "trained",
-            "collaborative_model": (
-                "trained" if self._model.collaborative_model.is_fitted
-                else f"skipped ({len(interactions)} interacciones < 5 mínimo)"
-            ),
         }
 
     def _save_with_metadata(self, source: str = "manual") -> None:

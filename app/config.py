@@ -11,21 +11,15 @@ class Settings(BaseSettings):
     app_version: str = "2.0.0"
     debug: bool = False
 
-    # Parámetros del modelo Content-Based
+    # Parámetros del modelo Content-Based (TF-IDF + coseno)
     tfidf_max_features: int = 500
     tfidf_ngram_min: int = 1
     tfidf_ngram_max: int = 2
 
-    # Parámetros del modelo Collaborative Filtering
-    # Se ajusta dinámicamente al tamaño de la matriz (ver collaborative.py)
-    svd_n_components: int = 50
-    svd_random_state: int = 42
-
-    # Parámetros del modelo Híbrido
-    # α pondera content-based, β pondera collaborative
-    # Se ajustan según la cantidad de historial disponible
-    hybrid_alpha: float = 0.6    # peso content-based
-    hybrid_beta: float = 0.4     # peso collaborative
+    # Parámetros del modelo Random Forest (evaluación de riesgo)
+    rf_n_estimators: int = 100
+    rf_max_depth: int = 8
+    rf_random_state: int = 42
 
     # Recomendaciones por defecto
     default_top_k: int = 10

@@ -128,21 +128,9 @@ async def get_model_info() -> dict:
                 else 0
             ),
         },
-        "collaborative_model": {
-            "fitted": recommender_service._model.collaborative_model.is_fitted,
-            "num_doctors": (
-                recommender_service._model.collaborative_model.num_doctors
-                if recommender_service._model.collaborative_model.is_fitted
-                else 0
-            ),
-            "explained_variance": (
-                recommender_service._model.collaborative_model.explained_variance_ratio
-                if recommender_service._model.collaborative_model.is_fitted
-                else 0.0
-            ),
-        },
         "risk_model": {
             "status": "ready",
             "version": recommender_service._risk_model._version,
+            "feature_importances": recommender_service._risk_model.get_feature_importances(),
         },
     }

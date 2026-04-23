@@ -72,17 +72,8 @@ def run_training_pipeline() -> None:
     model = HybridRecommender()
     model.fit(lawyers=lawyers, interactions=train_interactions)
 
-    print(f"      Content-Based  : entrenado")
+    print(f"      Content-Based     : entrenado")
     print(f"      Vocabulario TF-IDF: {model.content_model.vocabulary_size} términos")
-
-    if model.collaborative_model.is_fitted:
-        print(f"      Collaborative  : entrenado")
-        print(
-            f"      SVD varianza explicada: "
-            f"{model.collaborative_model.explained_variance_ratio:.2%}"
-        )
-    else:
-        print(f"      Collaborative  : omitido (insuficientes interacciones de train)")
 
     # ── 4. Evaluar ────────────────────────────────────────────────────────────
     print("\n[4/5] Evaluando con datos de test...")
