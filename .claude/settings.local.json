@@ -18,7 +18,9 @@
       "Bash(curl -s -X POST http://127.0.0.1:8002/api/v1/risk-assessment -H \"Content-Type: application/json\" -d '{\"specialty\":\"Neurocirugía\",\"priority\":\"alta\",\"documentation_complete\":false,\"informed_consent\":false}')",
       "Bash(PYTHONIOENCODING=utf-8 python -m training.train)",
       "Bash(npm run:*)",
-      "mcp__6b1b1df7-437f-484c-bdc6-43e67bb47d7a__execute_sql"
+      "mcp__6b1b1df7-437f-484c-bdc6-43e67bb47d7a__execute_sql",
+      "Bash(python -c \"import json,sys; p=json.load\\(sys.stdin\\); print\\('Framework:', list\\(p.get\\('dependencies',{}\\).keys\\(\\)\\)[:15]\\)\")",
+      "Bash(python -c \"import json; p=json.load\\(open\\('C:/Users/MathiasVasquez/Desktop/TP1/Sinapsitencia/package.json'\\)\\); deps={**p.get\\('dependencies',{}\\),**p.get\\('devDependencies',{}\\)}; [print\\(k,v\\) for k,v in deps.items\\(\\) if any\\(x in k for x in ['next','react','express','fastify','hono','nest','koa','django','spring']\\)]\")"
     ]
   }
 }
